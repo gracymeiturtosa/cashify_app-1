@@ -12,7 +12,10 @@ class SettingsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings', style: Theme.of(context).textTheme.headlineLarge),
+        title: Text(
+          'Settings',
+          style: Theme.of(context).textTheme.headlineLarge!.copyWith(color: Colors.black), // Changed to black
+        ),
       ),
       body: Center(
         child: Padding(
@@ -22,7 +25,7 @@ class SettingsScreen extends StatelessWidget {
             constraints: const BoxConstraints(minWidth: 300, maxWidth: 600),
             padding: const EdgeInsets.all(24.0),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface, // Lighter Base Dark
+              color: Theme.of(context).colorScheme.surface,
               border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2)),
               borderRadius: BorderRadius.circular(8.0),
               boxShadow: [
@@ -63,38 +66,38 @@ class SettingsScreen extends StatelessWidget {
                         onPressed: transactionProvider.isLoading
                             ? null
                             : () async {
-                          final dbService = DatabaseService();
-                          try {
-                            await dbService.updateSettings(
-                              transactionProvider.cashEnabled,
-                              transactionProvider.cardEnabled,
-                            );
-                            await transactionProvider.refreshSettings();
-                            if (context.mounted) {
-                              Navigator.pop(context);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Settings saved successfully')),
-                              );
-                            }
-                          } catch (e) {
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    transactionProvider.errorMessage ?? 'Error saving settings',
-                                    style: Theme.of(context).textTheme.bodyMedium,
-                                  ),
-                                ),
-                              );
-                            }
-                          }
-                        },
+                                final dbService = DatabaseService();
+                                try {
+                                  await dbService.updateSettings(
+                                    transactionProvider.cashEnabled,
+                                    transactionProvider.cardEnabled,
+                                  );
+                                  await transactionProvider.refreshSettings();
+                                  if (context.mounted) {
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Settings saved successfully')),
+                                    );
+                                  }
+                                } catch (e) {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          transactionProvider.errorMessage ?? 'Error saving settings',
+                                          style: Theme.of(context).textTheme.bodyMedium,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                }
+                              },
                         child: transactionProvider.isLoading
                             ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(color: Color(0xFF163300)),
-                        )
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(color: Color(0xFF163300)),
+                              )
                             : Text('Save', style: Theme.of(context).textTheme.labelLarge),
                       ),
                     ),

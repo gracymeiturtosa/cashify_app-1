@@ -80,15 +80,15 @@ class TransactionProvider with ChangeNotifier {
     }
 
     final existingItemIndex = _cart.indexWhere(
-          (item) => item['product'].id == product.id,
+      (item) => item['product'].id == product.id,
     );
     final currentQuantity =
-    existingItemIndex >= 0 ? _cart[existingItemIndex]['quantity'] : 0;
+        existingItemIndex >= 0 ? _cart[existingItemIndex]['quantity'] : 0;
     final totalRequestedQuantity = currentQuantity + quantity;
 
     if (totalRequestedQuantity > product.stock) {
       _errorMessage =
-      'Not enough stock for ${product.name} (Available: ${product.stock})';
+          'Not enough stock for ${product.name} (Available: ${product.stock})';
       notifyListeners();
       return false;
     }
@@ -120,7 +120,7 @@ class TransactionProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Map<String, dynamic>> completeTransaction(BuildContext context) async {
+  Future<Map<String, dynamic>> completeTransaction(BuildContext context, {required double cashTendered}) async {
     if (_cart.isEmpty) {
       _errorMessage = 'Cart is empty';
       notifyListeners();
@@ -129,6 +129,20 @@ class TransactionProvider with ChangeNotifier {
         'total': 0.0,
         'cart': [],
         'paymentMethod': _paymentMethod,
+        'change': 0.0,
+      };
+    }
+
+    if (_paymentMethod == 'Cash' && cashTendered < _total) {
+      _errorMessage = 'Insufficient cash tendered';
+      _isLoading = false;
+      notifyListeners();
+      return {
+        'transactionId': -1,
+        'total': 0.0,
+        'cart': [],
+        'paymentMethod': _paymentMethod,
+        'change': 0.0,
       };
     }
 
@@ -137,12 +151,22 @@ class TransactionProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      // Use the updated insertTransaction method from DatabaseService
+      final cartCopy = List<Map<String, dynamic>>.from(_cart);
+      
       final transactionDetails = await _dbService.insertTransaction(
         _total,
         _paymentMethod,
-        _cart,
+        cartCopy,
+        cashTendered, // Pass cashTendered to DatabaseService
       );
+
+      final result = {
+        'transactionId': transactionDetails['transactionId'] ?? -1,
+        'total': _total,
+        'cart': cartCopy,
+        'paymentMethod': _paymentMethod,
+        'change': transactionDetails['change'] as double, // Use change from DatabaseService
+      };
 
       _cart.clear();
       _total = 0.0;
@@ -156,7 +180,7 @@ class TransactionProvider with ChangeNotifier {
 
       _isLoading = false;
       notifyListeners();
-      return transactionDetails;
+      return result;
     } catch (e) {
       _errorMessage = 'Transaction failed: $e';
       _isLoading = false;
@@ -166,6 +190,7 @@ class TransactionProvider with ChangeNotifier {
         'total': 0.0,
         'cart': [],
         'paymentMethod': _paymentMethod,
+        'change': 0.0,
       };
     }
   }

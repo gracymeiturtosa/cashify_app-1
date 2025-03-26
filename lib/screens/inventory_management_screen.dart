@@ -24,7 +24,7 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Theme.of(context).colorScheme.surface, // Lighter Base Dark
+        backgroundColor: Theme.of(context).colorScheme.surface,
         title: Text('Edit Product', style: Theme.of(context).textTheme.headlineMedium),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -119,7 +119,10 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Inventory Management', style: Theme.of(context).textTheme.headlineLarge),
+        title: Text(
+          'Stock Management',
+          style: Theme.of(context).textTheme.headlineLarge!.copyWith(color: Colors.black), // Changed to black
+        ),
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: Padding(
@@ -167,7 +170,7 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                     return Center(child: Text(provider.errorMessage!, style: Theme.of(context).textTheme.bodyMedium));
                   }
                   final filteredProducts =
-                  provider.products.where((p) => p.name.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
+                      provider.products.where((p) => p.name.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
                   final sortedProducts = _sortProducts(filteredProducts);
 
                   return ListView.builder(
@@ -175,7 +178,7 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
                     itemBuilder: (context, index) {
                       final product = sortedProducts[index];
                       return Card(
-                        color: Theme.of(context).colorScheme.surface, // Lighter Base Dark
+                        color: Theme.of(context).colorScheme.surface,
                         child: ListTile(
                           title: Text(product.name, style: Theme.of(context).textTheme.headlineSmall),
                           subtitle: Text(
@@ -257,37 +260,37 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
           onPressed: provider.isLoading
               ? null
               : () async {
-            if (nameController.text.isEmpty || priceController.text.isEmpty || stockController.text.isEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('All fields are required')));
-              return;
-            }
-            try {
-              final success = await provider.addProduct(
-                nameController.text,
-                double.parse(priceController.text),
-                int.parse(stockController.text),
-              );
-              if (success && context.mounted) {
-                await Provider.of<TransactionProvider>(context, listen: false).refreshProducts();
-                nameController.clear();
-                priceController.clear();
-                stockController.clear();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Product added successfully')),
-                );
-              } else if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(provider.errorMessage ?? 'Unknown error')),
-                );
-              }
-            } catch (e) {
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(provider.errorMessage ?? 'Invalid input')),
-                );
-              }
-            }
-          },
+                  if (nameController.text.isEmpty || priceController.text.isEmpty || stockController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('All fields are required')));
+                    return;
+                  }
+                  try {
+                    final success = await provider.addProduct(
+                      nameController.text,
+                      double.parse(priceController.text),
+                      int.parse(stockController.text),
+                    );
+                    if (success && context.mounted) {
+                      await Provider.of<TransactionProvider>(context, listen: false).refreshProducts();
+                      nameController.clear();
+                      priceController.clear();
+                      stockController.clear();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Product added successfully')),
+                      );
+                    } else if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(provider.errorMessage ?? 'Unknown error')),
+                      );
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(provider.errorMessage ?? 'Invalid input')),
+                      );
+                    }
+                  }
+                },
           child: provider.isLoading
               ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Color(0xFF163300)))
               : Text('Add', style: Theme.of(context).textTheme.labelLarge),
@@ -300,7 +303,7 @@ class _InventoryManagementScreenState extends State<InventoryManagementScreen> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Theme.of(context).colorScheme.surface, // Lighter Base Dark
+        backgroundColor: Theme.of(context).colorScheme.surface,
         title: Text('Delete Product', style: Theme.of(context).textTheme.headlineMedium),
         content: Text('Are you sure you want to delete ${product.name}?',
             style: Theme.of(context).textTheme.bodyLarge),

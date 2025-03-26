@@ -16,7 +16,10 @@ class DashboardScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cashify App', style: Theme.of(context).textTheme.headlineLarge),
+        title: Text(
+          'Cashify App',
+          style: Theme.of(context).textTheme.headlineLarge!.copyWith(color: Colors.black), // Already black
+        ),
         backgroundColor: Theme.of(context).primaryColor,
         centerTitle: true,
         leading: Builder(
@@ -47,20 +50,20 @@ class DashboardScreen extends StatelessWidget {
                       title: 'New Transaction',
                       icon: Icons.add_shopping_cart,
                       onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const TransactionScreen()),
-                      )),
+                            context,
+                            MaterialPageRoute(builder: (_) => const TransactionScreen()),
+                          )),
                 ),
                 const SizedBox(height: 20.0),
                 SizedBox(
                   width: buttonWidth,
                   child: _buildMenuButton(context,
-                      title: 'Inventory Management',
+                      title: 'Stock Management',
                       icon: Icons.inventory,
                       onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const InventoryManagementScreen()),
-                      )),
+                            context,
+                            MaterialPageRoute(builder: (_) => const InventoryManagementScreen()),
+                          )),
                 ),
                 const SizedBox(height: 20.0),
                 SizedBox(
@@ -69,9 +72,9 @@ class DashboardScreen extends StatelessWidget {
                       title: 'Sales Reports',
                       icon: Icons.bar_chart,
                       onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const SalesReportScreen()),
-                      )),
+                            context,
+                            MaterialPageRoute(builder: (_) => const SalesReportScreen()),
+                          )),
                 ),
                 const SizedBox(height: 20.0),
                 SizedBox(
@@ -80,9 +83,9 @@ class DashboardScreen extends StatelessWidget {
                       title: 'Settings',
                       icon: Icons.settings,
                       onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const SettingsScreen()),
-                      )),
+                            context,
+                            MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                          )),
                 ),
                 const SizedBox(height: 20.0),
                 SizedBox(
@@ -91,10 +94,10 @@ class DashboardScreen extends StatelessWidget {
                       title: 'Log Out',
                       icon: Icons.logout,
                       onPressed: () => Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (_) => const LoginScreen()),
-                        (route) => false,
-                      )),
+                            context,
+                            MaterialPageRoute(builder: (_) => const LoginScreen()),
+                            (route) => false,
+                          )),
                 ),
               ],
             ),
@@ -116,16 +119,15 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  // Drawer widget for the hamburger menu
   Widget _buildDrawer(BuildContext context) {
     return Drawer(
-      backgroundColor: const Color(0xFF1E231F), // Lighter Base Dark
+      backgroundColor: const Color(0xFF1E231F),
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
             decoration: const BoxDecoration(
-              color: Color(0xFF9FE870), // Bright Green
+              color: Color(0xFF9FE870),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,7 +138,7 @@ class DashboardScreen extends StatelessWidget {
                   style: GoogleFonts.inter(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: const Color(0xFF163300), // Forest Green
+                    color: const Color(0xFF163300),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -154,7 +156,7 @@ class DashboardScreen extends StatelessWidget {
             leading: const Icon(Icons.info, color: Colors.white),
             title: Text('About the App', style: Theme.of(context).textTheme.bodyMedium),
             onTap: () {
-              Navigator.pop(context); // Close drawer
+              Navigator.pop(context);
               _showAboutDialog(context);
             },
           ),
@@ -162,7 +164,7 @@ class DashboardScreen extends StatelessWidget {
             leading: const Icon(Icons.verified, color: Colors.white),
             title: Text('Version', style: Theme.of(context).textTheme.bodyMedium),
             onTap: () {
-              Navigator.pop(context); // Close drawer
+              Navigator.pop(context);
               _showVersionDialog(context);
             },
           ),
@@ -170,7 +172,7 @@ class DashboardScreen extends StatelessWidget {
             leading: const Icon(Icons.rule, color: Colors.white),
             title: Text('Rules and Regulations', style: Theme.of(context).textTheme.bodyMedium),
             onTap: () {
-              Navigator.pop(context); // Close drawer
+              Navigator.pop(context);
               _showRulesDialog(context);
             },
           ),
@@ -178,7 +180,7 @@ class DashboardScreen extends StatelessWidget {
             leading: const Icon(Icons.group, color: Colors.white),
             title: Text('Our Team', style: Theme.of(context).textTheme.bodyMedium),
             onTap: () {
-              Navigator.pop(context); // Close drawer
+              Navigator.pop(context);
               _showTeamDialog(context);
             },
           ),
@@ -187,7 +189,6 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  // Dialog for About the App
   void _showAboutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -208,7 +209,6 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  // Dialog for Version
   void _showVersionDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -229,7 +229,6 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  // Dialog for Rules and Regulations
   void _showRulesDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -258,7 +257,6 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  // Dialog for Our Team
   void _showTeamDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -281,6 +279,24 @@ class DashboardScreen extends StatelessWidget {
               const SizedBox(height: 16),
               Text(
                 'Noel Amber Eugenio',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              Text(
+                'Coder and Designer',
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: const Color(0xFF868685)),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Ejos, Justine',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              Text(
+                'Coder and Debugger',
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: const Color(0xFF868685)),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Guintao, Christian Paolo A',
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               Text(
